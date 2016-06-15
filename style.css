@@ -74,24 +74,15 @@
 
   #infotext {
     position: relative;
-    top: 75px;
+    top: 15px;
     left: 16px;
     width: 950px;
   }
 
   #title_TD {
     position: relative;
-    top: -618px;
-    left: 274px;
-    font-size: 14px;
-    font-weight: bold;
-    width: 300px;
-  }
-
-  #title_BU {
-    position: relative;
-    top: -668px;
-    left: 917px;
+    top: -683px;
+    left: 228px;
     font-size: 14px;
     font-weight: bold;
     width: 300px;
@@ -99,16 +90,26 @@
 
   #subtitle_TD {
     position: relative;
-    top: -617px;
-    left: 246px;
+    top: -682px;
+    left: 191px;
     font-size: 14px;
     font-weight: bold;
     width: 300px;
   }
+
+  #title_BU {
+    position: relative;
+    top: -733px;
+    left: 960px;
+    font-size: 14px;
+    font-weight: bold;
+    width: 300px;
+  }
+
   #subtitle_BU {
     position: relative;
-    top: -667px;
-    left: 881px;
+    top: -732px;
+    left: 921px;
     font-size: 14px;
     font-weight: bold;
     width: 300px;
