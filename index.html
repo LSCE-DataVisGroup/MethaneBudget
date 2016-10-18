@@ -48,6 +48,8 @@
         // http://bost.ocks.org/mike/sankey/
         // http://bl.ocks.org/git-ashish/8959771
 
+        //Global stats for sources
+        //statsTab2_emis03-12_TDpost_BU_5cat_GLOBAL_v3_4May2016.txt
         var TD_sourceStats = [
           {sourceName:"Fossil", mean: 105, min:77, max:133},
           {sourceName:"Agriwast", mean: 188, min:115, max:243},
@@ -64,20 +66,57 @@
           {sourceName:"OtherNat", mean: 199, min:104, max:297}
           ];
 
+        //Regional stats. TD from Table 4 in manuscript.
+        var TD_regionStats = [
+          {sourceName:"Cent_NAme", mean: 11, min: 5, max: 15},
+          {sourceName:"Trop_SAme", mean: 84, min: 65, max: 101},
+          {sourceName:"Temp_SAme", mean: 17, min: 12, max: 27},
+          {sourceName:"NAfr", mean: 42, min: 36, max: 55},
+          {sourceName:"SAfr", mean: 44, min: 37, max: 53},
+          {sourceName:"SE_Asia", mean: 73, min: 55, max: 84},
+          {sourceName:"India", mean: 39, min: 37, max: 46},
+          {sourceName:"Oceania", mean: 11, min: 7, max: 19},
+          {sourceName:"contUSA", mean: 41, min: 34, max: 49},
+          {sourceName:"Europe", mean: 28, min: 21, max: 34},
+          {sourceName:"Temp_Eurasia_Japan", mean: 46, min: 38, max: 54},
+          {sourceName:"China", mean: 58, min: 51, max: 72},
+          {sourceName:"Bor_NAme", mean: 20, min: 13, max: 27},
+          {sourceName:"Russia", mean: 38, min: 31, max: 44}
+          ];
+
+        //Sankey_TD_2003-2012_sept2016.txt
+        var BU_regionStats = [
+          {sourceName:"Cent_NAme", mean: 9, min: 3, max: 13},
+          {sourceName:"Trop_SAme", mean: 75, min: 47, max: 103},
+          {sourceName:"Temp_SAme", mean: 11, min: 7, max: 14},
+          {sourceName:"NAfr", mean: 36, min: 25, max: 53},
+          {sourceName:"SAfr", mean: 35, min: 27, max: 47},
+          {sourceName:"SE_Asia", mean: 63, min: 44, max: 73},
+          {sourceName:"India", mean: 32, min: 23, max: 42},
+          {sourceName:"Oceania", mean: 10, min: 7, max: 14},
+          {sourceName:"contUSA", mean: 42, min: 31, max: 63},
+          {sourceName:"Europe", mean: 28, min: 22, max: 34},
+          {sourceName:"Temp_Eurasia_Japan", mean: 47, min: 42, max: 54},
+          {sourceName:"China", mean: 61, min: 43, max: 79},
+          {sourceName:"Bor_NAme", mean: 37, min: 19, max: 66},
+          {sourceName:"Russia", mean: 41, min: 28, max: 60},
+          {sourceName:"Not affected", mean: -999, min: -999, max: -999}
+          ];  
+
         //Top-down Sankey
         var chart_div1 = "#chart_TD",
-          jsonFile1 = "data/Sankey_TD_2003-2012_10june2016_mean_noZeros.json";          
-        makeSankey(chart_div1, jsonFile1, TD_sourceStats);  
+          jsonFile1 = "data/Sankey_TD_2003-2012_10june2016_mean_noZeros.json";
+        makeSankey(chart_div1, jsonFile1, TD_sourceStats, TD_regionStats);  
 
         //Bottum-up Sankey
         var chart_div2 = "#chart_BU",
           jsonFile2 = "data/Sankey_BU_2003-2012_10june2016_mean_3levels.json";
-        makeSankey(chart_div2, jsonFile2, BU_sourceStats);
+        makeSankey(chart_div2, jsonFile2, BU_sourceStats, BU_regionStats);
 
         var minStat, maxStat; //objects to store min and max statistics
         var yshift_tooltip = 90; //amount to raise tooltip in y-dirn
 
-        function makeSankey(chart_div, jsonFile, sourceStats) {          
+        function makeSankey(chart_div, jsonFile, sourceStats, regionStats) {
           var margin = {
             top: 110,
             right: 10,
@@ -159,7 +198,7 @@
             "Wildfires": "#ffdae2",
             "WildAnimals": "#ffdae2",
             "GeologicalSources": "#ffdae2",
-            "PermafrostAndHydrates": "#ffdae2",        
+            "PermafrostAndHydrates": "#ffdae2",
             "Freshwater": "#ffdae2",
             "fakeSource": "#67a9cf"
           };
@@ -179,7 +218,7 @@
             "China": "China",
             "India": "India",
             "SE_Asia": "South East Asia",
-            "Temp_Eurasia_Japan": "Temperate Eurasia & Japan",
+            "Temp_Eurasia_Japan": "Central Eurasia & Japan",
             "Not affected": "Not (yet) spatially distributed",
             //sources
             "Agriwast": "Agriculture & Waste",
@@ -215,9 +254,9 @@
           //class labels for category  nodes only
           var categories = ["Agriwast", "OtherNat", "BioBurBiof", "Wetlands", "Fossil"];
           //class labels for sub-category  nodes only
-          var subCategories = ["Termites", "Wildfires", "WildAnimals", "EntericFermentationAndManure", 
-              "LandfillsAndWaste", "GeologicalSources", "PermafrostAndHydrates", "Rice", 
-              "Coal", "GasAndOilIndustry", "BiofuelBurning", "BiomassBurning", "Freshwater", 
+          var subCategories = ["Termites", "Wildfires", "WildAnimals", "EntericFermentationAndManure",
+              "LandfillsAndWaste", "GeologicalSources", "PermafrostAndHydrates", "Rice",
+              "Coal", "GasAndOilIndustry", "BiofuelBurning", "BiomassBurning", "Freshwater",
               "fakeSource"];
 
           var minFile, maxFile;
@@ -239,7 +278,7 @@
             });
           });
 
-          function make(graph, minStat, maxStat) {            
+          function make(graph, minStat, maxStat) {
             // Display info text for Sankey diagram
             d3.select("#infotext").html("Methane source estimates over the period 2003&ndash;2012 from Top-Down (left) and Bottom-Up (right) approaches showing contributions (mean [min, max]) from 14 continental regions with respect to five broad source categories (Fossil fuel production & use, Agriculture & Waste, Biofuel & Biomass burning, Wetlands, and Other Natural sources). Total source estimates from the Bottom-Up approach are further classed into finer subcategories.")
               .style("display", "block");
@@ -350,7 +389,7 @@
                     .style("top", (d3.event.pageY - yshift_tooltip) + "px");
                 }
               })
-              .on("mouseout", function(d) {   
+              .on("mouseout", function(d) {
 
                 //Restore opacity
                 d3.selectAll(".link:not(#" + this.id + ")").style("opacity", 1)
@@ -371,7 +410,7 @@
             // add in the nodes
             var node = svg.append("g").selectAll(".node")
               .data(graph.nodes)
-              .enter().append("g")              
+              .enter().append("g")
               .attr("class", function(d) {
                 if (categories.indexOf(d.name) != -1) return "node class-sources";
                 else if (subCategories.indexOf(d.name) != -1) {
@@ -423,7 +462,7 @@
               });
 
               // add the node tooltip
-              node.on("mouseover", function(d) {  
+              node.on("mouseover", function(d) {
 
                 if (d3.select(this).attr("class") === "node class-sources") {
                   //Only display subsource nodes and links belonging to current node
@@ -433,43 +472,43 @@
                   d3.selectAll(".node.sub-sources:not(.belongsTo-" + this_source + ")")
                     .style("display", "none");
 
-                  //Retrieve mean, min, max
+                  //Retrieve mean, min, max for sources
                   var gloStat = getGlobalStat(sourceStats, d);
 
                   if (chart_div === "#chart_BU") {
                     //show all sub-sources and their links belonging to source
                     d3.selectAll(".belongsTo-" + reverse_name_dict[d3.select(this).text()])
                       .style("display", "inline");
-                }
+                  }
             
-                if (chart_div === "#chart_BU" && name_dict[d.name] === "Wetlands") {
-                  //Tooltip
-                  div.transition()
-                    .style("opacity", .9);
-                  div.html(
-                    name_dict[d.name] + ":<br><br>" +
-                     "<table>" +
-                      "<tr>" +
-                        "<td>" + "sum of means: " + "</td>" +
-                        "<td><b>" + format(d.value) + "</b>" + " " + units + "</td>" +
-                      "</tr>" +
-                      "<tr>" +
-                        "<td>" + "global mean: " + "</td>" +
-                        "<td>" + gloStat[0] +
-                                 " [" + gloStat[1] + "&ndash;" + gloStat[2] + "]" +
-                                 " " + units + "</td>" +
-                      "</tr>" +
-                      "<tr>" +
-                        "<td>" + "<br>" + "</td>" +
-                      "</tr>" +
-                      "<tr>" +  
-                        "<td>" + "No sub-categories for Wetlands " + "</td>" +
-                      "</tr>" +
-                    "</table>"
-                    )
-                    .style("left", (d3.event.pageX) + "px")
-                    .style("top", (d3.event.pageY - yshift_tooltip - 40) + "px");
-                  } else {
+                  if (chart_div === "#chart_BU" && name_dict[d.name] === "Wetlands") {
+                    //Tooltip
+                    div.transition()
+                      .style("opacity", .9);
+                    div.html(
+                      name_dict[d.name] + ":<br><br>" +
+                       "<table>" +
+                        "<tr>" +
+                          "<td>" + "sum of means: " + "</td>" +
+                          "<td><b>" + format(d.value) + "</b>" + " " + units + "</td>" +
+                        "</tr>" +
+                        "<tr>" +
+                          "<td>" + "global mean: " + "</td>" +
+                          "<td>" + gloStat[0] +
+                                   " [" + gloStat[1] + "&ndash;" + gloStat[2] + "]" +
+                                   " " + units + "</td>" +
+                        "</tr>" +
+                        "<tr>" +
+                          "<td>" + "<br>" + "</td>" +
+                        "</tr>" +
+                        "<tr>" +  
+                          "<td>" + "No sub-categories for Wetlands " + "</td>" +
+                        "</tr>" +
+                      "</table>"
+                      )
+                      .style("left", (d3.event.pageX) + "px")
+                      .style("top", (d3.event.pageY - yshift_tooltip - 40) + "px");
+                  } else { //chart_TD
                     //Tooltip
                     div.transition()
                       .style("opacity", .9);
@@ -492,40 +531,56 @@
                       .style("top", (d3.event.pageY - yshift_tooltip - 40) + "px");
                   }
                 
-              }
-              else if (d3.select(this).attr("class") === "node sub-sources") {                
+                }
+                else if (d3.select(this).attr("class") === "node sub-sources") {
 
-                var minValue = getSubStats(minStat, d),
-                    maxValue = getSubStats(maxStat, d);
+                  var minValue = getSubStats(minStat, d),
+                      maxValue = getSubStats(maxStat, d);
 
-                //Tooltip
-                div.transition()
-                   .style("opacity", .9);
-                div.html(
-                  name_dict[d.name] + ": " + name_dict[d.sourceLinks[0].target.name] + "<br><br>" +
-                    "<table>" +
-                      "<tr>" + 
-                      "<td>" + "mean: " + "</td>" +
-                        "<td><b>" + format(d.value) + "</b>" + " [" + format(minValue) + "&ndash;" +format(maxValue) + "]" + "</td>" +
-                        "<td>" + " " + units + "</td>" +
-                      "</tr>" +
-                    "</table>"
-                  )
-                  .style("left", (d3.event.pageX) + "px")
-                  .style("top", (d3.event.pageY - yshift_tooltip) + "px");
-              }
-
-              else {
-                if (d.name != "fakeSource") {                  
-
+                  //Tooltip
                   div.transition()
-                    .style("opacity", .9);
-                  div.html(name_dict[d.name] + ":<br><br>" +
-                    "sum of means: " + "<b>" + format(d.value) + "</b>" + " " + units )
+                     .style("opacity", .9);
+                  div.html(
+                    name_dict[d.name] + ": " + name_dict[d.sourceLinks[0].target.name] + "<br><br>" +
+                      "<table>" +
+                        "<tr>" + 
+                        "<td>" + "mean: " + "</td>" +
+                          "<td><b>" + format(d.value) + "</b>" + " [" + format(minValue) + "&ndash;" +format(maxValue) + "]" + "</td>" +
+                          "<td>" + " " + units + "</td>" +
+                        "</tr>" +
+                      "</table>"
+                    )
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY - yshift_tooltip) + "px");
                 }
-              } 
+
+                else {//node regions
+                  //regional stats
+                  var regStat = getGlobalStat(regionStats, d);
+
+                  if (d.name != "fakeSource") {
+
+                    div.transition()
+                      .style("opacity", .9);
+                    div.html(
+                      name_dict[d.name] + ":<br><br>" +
+                       "<table>" +
+                        "<tr>" +
+                          "<td>" + "sum of means: " + "</td>" +
+                          "<td><b>" + format(d.value) + "</b>" + " " + units + "</td>" +
+                        "</tr>" +
+                        "<tr>" +
+                          "<td>" + "regional mean: " + "</td>" +
+                          "<td>" + regStat[0] +
+                                   " [" + regStat[1] + "&ndash;" + regStat[2] + "]" +
+                                   " " + units + "</td>" +
+                        "</tr>" +
+                      "</table>"                     
+                      )
+                      .style("left", (d3.event.pageX) + "px")
+                      .style("top", (d3.event.pageY - yshift_tooltip) + "px");
+                  }
+                } 
 
               })
               .on("mouseenter", highlight_node_links)
@@ -637,7 +692,7 @@
             function translateNode(chart_div, nodeClass, deltaX, displacement_dict) {
 
               d3.select(chart_div).selectAll(nodeClass)
-                .each(function(d, idx) {                  
+                .each(function(d, idx) {
                   d3.select(this).attr("transform",
                     "translate(" + (
                       d.x = d.x - deltaX
