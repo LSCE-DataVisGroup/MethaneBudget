@@ -84,7 +84,7 @@
           {sourceName:"Russia", mean: 38, min: 31, max: 44}
           ];
 
-        //Sankey_TD_2003-2012_sept2016.txt
+        //Sankey_BU_2003-2012_sept2016.txt (SumSources mean, min, max)
         var BU_regionStats = [
           {sourceName:"Cent_NAme", mean: 9, min: 3, max: 13},
           {sourceName:"Trop_SAme", mean: 75, min: 47, max: 103},
@@ -558,7 +558,23 @@
                   //regional stats
                   var regStat = getGlobalStat(regionStats, d);
 
-                  if (d.name != "fakeSource") {
+                  if (d.name === "Not affected") {
+                    div.transition()
+                      .style("opacity", .9);
+                    div.html(
+                      name_dict[d.name] + "<br><br>" +
+                       "<table>" +
+                        "<tr>" +
+                          "<td>" + "mean: " + "</td>" +
+                          "<td><b>" + format(d.value) + "</b>" + " " + units + "</td>" +
+                        "</tr>" +
+                      "</table>"
+                      )
+                      .style("left", (d3.event.pageX) + "px")
+                      .style("top", (d3.event.pageY - yshift_tooltip) + "px");
+                  }
+
+                  else if (d.name != "fakeSource") {
 
                     div.transition()
                       .style("opacity", .9);
